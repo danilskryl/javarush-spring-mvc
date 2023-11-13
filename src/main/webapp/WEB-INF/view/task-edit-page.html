@@ -1,10 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Edit task</title>
+
+    <style>
+        button {
+            background-color: grey;
+            color: #ffffff;
+            width: max-content;
+            height: max-content;
+            padding: 5px 10px;
+            margin: 5px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        .rounded-box {
+            font-family: "Arial", sans-serif;
+            font-size: medium;
+            display: inline-block;
+            padding: 10px;
+            border: 2px solid #000;
+            border-radius: 25%;
+        }
+    </style>
 </head>
 <body>
-$END$
+
+<p class="rounded-box">Edit task</p>
+<form th:action="@{/tasks}" th:method="PUT" th:object="${editTask}">
+    <input type="hidden" th:field="*{id}">
+
+    <p>
+        <label for="description">Description</label>
+        <input id="description" type="text" th:field="*{description}">
+    </p>
+
+    <label for="status">Status</label>
+    <select id="status" th:field="*{status}">
+        <option th:each="status : ${T(org.danilskryl.javarush.domain.Status).values()}"
+                th:value="${status}" th:text="${status}">
+        </option>
+    </select>
+
+    <input type="submit" value="Update"/>
+</form>
+
 </body>
 </html>

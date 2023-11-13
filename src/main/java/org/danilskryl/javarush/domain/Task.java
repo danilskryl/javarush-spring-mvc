@@ -1,11 +1,9 @@
 package org.danilskryl.javarush.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "task", schema = "todo")
 public class Task {
@@ -14,7 +12,7 @@ public class Task {
     private Integer id;
     @Column(name = "description", length = 100, nullable = false)
     private String description;
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, columnDefinition = "tinyint")
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 }

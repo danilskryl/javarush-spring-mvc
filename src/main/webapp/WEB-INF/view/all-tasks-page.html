@@ -1,11 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>All tasks</title>
+    <link rel="stylesheet" type="text/css" href="../style/table.css">
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: max-content;
+            color: black;
+        }
+
+        th, td {
+            border: 1px solid black;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: chocolate;
+            text-align: center;
+        }
+
+        tr {
+            background-color: burlywood;
+        }
+
+        button {
+            background-color: grey;
+            color: #ffffff;
+            width: max-content;
+            height: max-content;
+            padding: 5px 10px;
+            margin: 5px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        .rounded-box {
+            font-family: "Arial", sans-serif;
+            font-size: medium;
+            display: inline-block;
+            padding: 10px;
+            border: 2px solid #000;
+            border-radius: 25%;
+        }
+    </style>
+
 </head>
 <body>
 
+<div>
+
+    <p class="rounded-box">Add new task</p>
+    <form th:action="@{/tasks/new}" method="get">
+        <button type="submit">New task</button>
+    </form>
+
+
+    <p class="rounded-box">All tasks:</p>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th colspan="2">Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="task : ${allTasks}">
+            <td th:text="${task.id}"></td>
+            <td th:text="${task.description}"></td>
+            <td th:text="${task.status}"></td>
+            <td>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" th:method="get">
+                    <button type="submit">Edit</button>
+                </form>
+            </td>
+
+            <td>
+                <form th:action="@{/tasks/{id}(id=${task.id})}" th:method="delete">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button th:each="pageNumber: ${pageNumbers}">
+        <a th:href="@{/tasks(page=${pageNumber}, limit=10)}" th:text="${pageNumber}"></a>
+    </button>
+
+</div>
 
 </body>
 </html>

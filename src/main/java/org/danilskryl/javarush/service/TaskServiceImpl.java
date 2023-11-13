@@ -4,6 +4,7 @@ import org.danilskryl.javarush.dao.TaskDAO;
 import org.danilskryl.javarush.domain.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,11 +17,39 @@ public class TaskServiceImpl implements TaskService {
         this.taskDAO = taskDAO;
     }
 
-    public List<Task> getTasks() {
-        return taskDAO.getAllTasks();
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> findTasks(int offset, int limit) {
+        return taskDAO.findAllTasks(offset, limit);
     }
 
-    public Task getTask(int id) {
+    @Override
+    @Transactional(readOnly = true)
+    public Integer countAllTasks() {
+        return taskDAO.countAllTasks();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Task findTask(int id) {
         return taskDAO.findTaskById(id);
+    }
+
+    @Override
+    @Transactional
+    public Task saveTask(Task task) {
+        return taskDAO.saveTask(task);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTask(int id) {
+        taskDAO.deleteTaskById(id);
+    }
+
+    @Override
+    @Transactional
+    public Task updateTask(Task task) {
+        return taskDAO.updateTask(task);
     }
 }

@@ -17,44 +17,43 @@ public class TaskDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Task> getAllTasks() {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            return session.createQuery("FROM Task", Task.class).list();
-        }
+    public List<Task> findAllTasks(int offset, int limit) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Task", Task.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .list();
+    }
+
+    public Integer countAllTasks() {
+        return Math.toIntExact(sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(*) FROM Task", Long.class)
+                .getSingleResult());
     }
 
     public Task findTaskById(int id) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            return session.get(Task.class, id);
-        }
+        return sessionFactory.getCurrentSession()
+                .get(Task.class, id);
     }
 
     public Task saveTask(Task task) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.getTransaction().begin();
-            session.persist(task);
-            session.getTransaction().commit();
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(task);
 
-            return task;
-        }
+        return task;
     }
 
     public void deleteTaskById(int id) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.getTransaction().begin();
-            Task task = session.get(Task.class, id);
+        Session session = sessionFactory.getCurrentSession();
+        Task task = session.get(Task.class, id);
+        if (task != null)
             session.remove(task);
-            session.getTransaction().commit();
-        }
+        else
+            throw new RuntimeException("Task with id " + id + " not found");
     }
 
     public Task updateTask(Task task) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.getTransaction().begin();
-            session.merge(task);
-            session.getTransaction().commit();
-
-            return task;
-        }
+        return sessionFactory.getCurrentSession()
+                .merge(task);
     }
 }
